@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="JavaCharts:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="JavaCharts.war">
+      <element id="artifact" artifact-name="JavaCharts:war exploded" />
+    </root>
+  </artifact>
+</component>

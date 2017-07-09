@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:property-placeholder location="classpath:Mysql.properties"/>
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <!--配置初始的大小-->
+        <property name="initialSize" value="1"/>
+        <property name="minIdle" value="1"/>
+        <property name="maxActive" value="10"/>
+        <!--配置获取超时需要等待的时间-->
+        <property name="maxWait" value="10000"/>
+        <!--配置间隔多久才进行一次检查，检测需要关闭的空闲连接-->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!--配置一个在连接池中最小的生存时间，单位是毫秒-->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+        <property name="testWhileIdle" value="true"/>
+
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="true"/>
+
+        <!--打开PSCache，并且指定每个链接上上PSCache上的大小-->
+
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+    </bean>
+
+    <!--配置SqlSessionFactory-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--扫描entity包-->
+        <property name="typeAliasesPackage" value="com.koali.model"/>
+    </bean>
+
+    <!--配置事务还有事务的传播机制-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
+        <property name="basePackage" value="com.koali.dao"/>
+    </bean>
+</beans>
